@@ -1,0 +1,21 @@
+{
+  "schema_version": "stek-writer-leases-v1",
+  "generation": 1,
+  "repository": "9qrv90-a11y/stek-odessa-crm-sandbox",
+  "active_lease": {
+    "lease_id": "STEK-SEC-FENCING-001-SANDBOX-LEASE-V1",
+    "task_id": "STEK-SEC-FENCING-001",
+    "status": "ACTIVE",
+    "writer_principal_type": "GITHUB_APP_INSTALLATION",
+    "allowed_actors": [
+      "stek-execution-router-sandbox[bot]"
+    ],
+    "allowed_refs": [
+      "refs/heads/codex/test-task-1",
+      "refs/heads/setup/test-env-1"
+    ],
+    "issued_by": "9qrv90-a11y",
+    "issued_at": "2026-11-10T19:19:35.0762239+02:00",
+    "expires_at": "2026-11-17T19:19:35.0784732+02:00"
+  }
+}

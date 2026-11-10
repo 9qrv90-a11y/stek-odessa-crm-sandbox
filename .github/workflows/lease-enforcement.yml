@@ -1,0 +1,31 @@
+name: STEK Sandbox Lease Audit (post-push only)
+on:
+  push:
+    branches:
+      - 'codex/**'
+      - 'setup/**'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check actor, ref and lease expiry
+        env:
+          EVENT_ACTOR: ${{ github.actor }}
+          EVENT_REF: ${{ github.ref }}
+        run: |
+          python3 - <<'PYCODE'
+          import json,os,sys,datetime
+          with open('writer-leases.json',encoding='utf-8') as f: d=json.load(f)
+          l=d.get('active_lease') or {}
+          actor=os.environ.get('EVENT_ACTOR','')
+          ref=os.environ.get('EVENT_REF','')
+          expiry=l.get('expires_at','')
+          try: expiration=datetime.datetime.fromisoformat(expiry.replace('Z','+00:00'))
+          except (ValueError,TypeError): expiration=datetime.datetime.min.replace(tzinfo=datetime.timezone.utc)
+          valid=(l.get('status')=='ACTIVE' and actor in l.get('allowed_actors',[]) and ref in l.get('allowed_refs',[]) and expiration>datetime.datetime.now(datetime.timezone.utc))
+          print('LEASE_AUDIT='+('PASS' if valid else 'BLOCKED'))
+          sys.exit(0 if valid else 1)
+          PYCODE
